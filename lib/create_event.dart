@@ -4,7 +4,7 @@ import 'app_keys.dart';
 import 'geolocation_service.dart';
 import 'l10n/app_localizations.dart';
 
-/// Creates a SAIMOS CC event at the device's current location, showing a
+/// Creates an event at the device's current location, showing a
 /// loading dialog followed by a success/failure dialog. Shared between the
 /// home screen quick action and the in-app button so both stay in sync.
 Future<void> createEventHere() async {

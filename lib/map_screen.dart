@@ -33,7 +33,6 @@ class _MapScreenState extends State<MapScreen> {
   String _userDetailsXml = '';
   List<String> _registerServiceList = [
     'saimosws/services/manage_tracking_deviceid',
-    'saimosws/services/manage_guardtracker_device',
   ];
   int _serviceIndex = 0;
   bool _triedDbCommunicatorRegistration = false;
@@ -140,10 +139,9 @@ class _MapScreenState extends State<MapScreen> {
     _startFlow();
   }
 
-  // SAIMOS CC is only reachable over VPN; without an explicit timeout Dart's
-  // HttpClient has none and would hang until the OS-level TCP timeout, which
-  // can take minutes and would leave the loading spinner stuck with no
-  // feedback.
+  // Without an explicit timeout Dart's HttpClient has none and would hang
+  // until the OS-level TCP timeout, which can take minutes and would leave
+  // the loading spinner stuck with no feedback.
   static const _networkTimeout = Duration(seconds: 15);
 
   HttpClient _httpClient() => HttpClient()
@@ -167,11 +165,11 @@ class _MapScreenState extends State<MapScreen> {
 
     // Fetch app service info from tracking server (non-fatal). Uses a
     // platform-neutral filename, separate from the old native Android app's
-    // "saimos-guard-android.json" (which is still served as-is for that
+    // "youmappics-android.json" (which is still served as-is for that
     // app's still-active installs and must not be renamed/removed).
     if (traccarUrl.isNotEmpty) {
       try {
-        final infoUrl = '${_origin(traccarUrl)}/appupdates/saimos-guard.json';
+        final infoUrl = '${_origin(traccarUrl)}/appupdates/youmappics.json';
         final req = await _httpClient().getUrl(Uri.parse(infoUrl));
         final res = await req.close();
         if (res.statusCode == 200) {
@@ -236,10 +234,10 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  // New, clean cc-db-communicator endpoint, replacing the old Talend job
-  // (manage_tracking_deviceid). Tried once, before the legacy GET-based
-  // fallback list below, which still exists for manage_guardtracker_device
-  // (a separate, not-yet-migrated job).
+  // SAIMOS CC's clean cc-db-communicator endpoint, replacing the old Talend
+  // job (manage_tracking_deviceid) there. This backend doesn't run
+  // cc-db-communicator, so this always 404s and falls through to the legacy
+  // GET-based fallback list below (harmless, tried once per app start).
   Future<bool> _registerDeviceViaDbCommunicator() async {
     final ccUrl = Preferences.instance.getString(Preferences.saimosccUrl) ?? '';
     final deviceId = Preferences.instance.getString(Preferences.id) ?? '';
@@ -286,7 +284,7 @@ class _MapScreenState extends State<MapScreen> {
     final username = Preferences.instance.getString(Preferences.saimosccUser) ?? '';
     final token = _tokens['access_token']?.toString() ?? '';
     // Fallback list has no leading slash, but the live JSON from
-    // appupdates/saimos-guard.json does (e.g. "/saimosws/services/..."),
+    // appupdates/youmappics.json does (e.g. "/saimosws/services/..."),
     // which would otherwise produce a double slash below.
     final service =
         _registerServiceList[_serviceIndex].replaceFirst(RegExp(r'^/+'), '');
@@ -457,7 +455,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SAIMOS Guard'),
+        title: const Text('YouMapPics'),
         actions: [
           IconButton(
             icon: const Icon(Icons.warning_amber_rounded),

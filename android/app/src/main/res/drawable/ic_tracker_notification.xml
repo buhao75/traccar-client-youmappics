@@ -4,9 +4,8 @@
     android:viewportWidth="960"
     android:viewportHeight="960">
   <!-- Standard Material "location pin" outline. The usual circular hole is
-       enlarged into a rounded square (echoing the app icon's centerpiece),
-       with a small solid dot re-added in its center — giving a ring-in-square
-       look reminiscent of the SAIMOS "O", as a nod to SAIMOS Guard branding.
+       enlarged into a rounded square, with a small solid dot re-added in its
+       center — giving a ring-in-square look.
        evenOdd fill makes each nested shape alternate hole/solid regardless of
        path winding direction, so it's safe to resize without recomputing
        winding order: pin body (filled) -> square (hole) -> center dot (filled). -->

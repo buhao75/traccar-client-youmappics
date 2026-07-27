@@ -40,7 +40,7 @@
   "disclosureMessage": "Diese App erfasst Standort- und Aktivitätsdaten im Hintergrund und sendet sie an den konfigurierten Server.",
   "configurationMessage": "Neue Konfiguration übernehmen?",
   "trackingUrlLabel": "Tracking Server-URL",
-  "ccSectionTitle": "SAIMOS Control Center",
+  "ccSectionTitle": "YouMapPics",
   "ccUrlLabel": "Control Center Server-URL",
   "ccUserLabel": "Benutzer",
   "retryButton": "Wiederholen",
@@ -52,5 +52,5 @@
   "ccConnectionError": "Verbindung zu Control Center fehlgeschlagen:\n{error}",
   "ccUserDetailError": "Benutzerdetails konnten nicht abgerufen werden ({statusCode}).",
   "ccGeoStoreError": "GeoStore-Verbindung fehlgeschlagen:\n{error}",
-  "ccConnectionTimeoutError": "Control Center Server unter {url} nicht erreichbar. Bitte VPN-Verbindung und die konfigurierte URL prüfen."
+  "ccConnectionTimeoutError": "Server unter {url} nicht erreichbar. Bitte die konfigurierte URL prüfen."
 }

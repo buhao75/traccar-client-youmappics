@@ -40,7 +40,7 @@
   "disclosureMessage": "This app collects location and activity data in the background and sends it to the configured server.",
   "configurationMessage": "Apply new configuration?",
   "trackingUrlLabel": "Tracking Server URL",
-  "ccSectionTitle": "SAIMOS Control Center",
+  "ccSectionTitle": "YouMapPics",
   "ccUrlLabel": "Control Center Server URL",
   "ccUserLabel": "Username",
   "retryButton": "Retry",
@@ -72,7 +72,7 @@
       "error": {"type": "String"}
     }
   },
-  "ccConnectionTimeoutError": "Could not reach the Control Center server at {url}. Please check your VPN connection and the configured URL.",
+  "ccConnectionTimeoutError": "Could not reach the server at {url}. Please check the configured URL.",
   "@ccConnectionTimeoutError": {
     "placeholders": {
       "url": {"type": "String"}

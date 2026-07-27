@@ -247,12 +247,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildListTile(AppLocalizations.of(context)!.passwordLabel, Preferences.saimosccPassword, false, obscure: true),
           const Divider(),
           ListTile(
-            title: const Text('SAIMOS Guard'),
+            title: const Text('YouMapPics'),
             subtitle: const Text('Based on Traccar Client (Apache License 2.0)'),
             trailing: const Icon(Icons.info_outline),
             onTap: () => showLicensePage(
               context: context,
-              applicationName: 'SAIMOS Guard',
+              applicationName: 'YouMapPics',
               applicationLegalese: 'Based on Traccar Client\n© Anton Tananaev\nApache License 2.0',
             ),
           ),

@@ -99,7 +99,7 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    const seedColor = Color(0xFF4570B4);
+    const seedColor = Color(0xFF385632);
     final lightScheme = ColorScheme.fromSeed(seedColor: seedColor, brightness: Brightness.light);
     final darkScheme = ColorScheme.fromSeed(seedColor: seedColor, brightness: Brightness.dark);
     return MaterialApp(

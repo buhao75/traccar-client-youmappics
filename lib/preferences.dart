@@ -52,14 +52,13 @@ class Preferences {
     }
     if (instance.getString(id) == null) {
       await instance.setString(id, (Random().nextInt(90000000) + 10000000).toString());
-      await instance.setString(url, 'https://tracking.saimos.eu');
+      await instance.setString(url, 'https://wildkogel.steigemann.de/gt');
+      await instance.setString(saimosccUrl, 'https://wildkogel.steigemann.de/ms/#/context/youmappics-mobile/178');
       await instance.setString(accuracy, 'medium');
       await instance.setInt(interval, 300);
       await instance.setInt(distance, 75);
       await instance.setBool(buffer, true);
       await instance.setBool(stopDetection, true);
-    } else if (instance.getString(url) == 'https://tracking.saimos.eu/gt') {
-      await instance.setString(url, 'https://tracking.saimos.eu');
     }
   }
 
