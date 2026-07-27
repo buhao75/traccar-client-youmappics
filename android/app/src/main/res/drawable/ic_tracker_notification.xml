@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <!-- Standard Material "location pin" outline. The usual circular hole is
+       enlarged into a rounded square (echoing the app icon's centerpiece),
+       with a small solid dot re-added in its center — giving a ring-in-square
+       look reminiscent of the SAIMOS "O", as a nod to SAIMOS Guard branding.
+       evenOdd fill makes each nested shape alternate hole/solid regardless of
+       path winding direction, so it's safe to resize without recomputing
+       winding order: pin body (filled) -> square (hole) -> center dot (filled). -->
+  <group android:translateY="960">
+    <path
+        android:fillColor="#FF000000"
+        android:fillType="evenOdd"
+        android:pathData="M480-80Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80ZM315,-705L645,-705Q680,-705 680,-670L680,-450Q680,-415 645,-415L315,-415Q280,-415 280,-450L280,-670Q280,-705 315,-705ZM445,-610L515,-610Q530,-610 530,-595L530,-525Q530,-510 515,-510L445,-510Q430,-510 430,-525L430,-595Q430,-610 445,-610Z"/>
+  </group>
+</vector>

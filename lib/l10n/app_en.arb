@@ -1,0 +1,81 @@
+{
+  "trackingTitle": "Tracking",
+  "settingsTitle": "Settings",
+  "statusTitle": "Logs",
+  "saveButton": "Save",
+  "cancelButton": "Cancel",
+  "okButton": "OK",
+  "locationButton": "Send location",
+  "statusButton": "Show status",
+  "settingsButton": "Change settings",
+  "invalidValue": "Invalid value",
+  "disabledValue": "Disabled",
+  "idLabel": "Device identifier",
+  "urlLabel": "Server URL",
+  "accuracyLabel": "Location accuracy",
+  "highestAccuracyLabel": "Highest",
+  "highAccuracyLabel": "High",
+  "mediumAccuracyLabel": "Medium",
+  "lowAccuracyLabel": "Low",
+  "intervalLabel": "Interval (seconds)",
+  "fastestIntervalLabel": "Fastest interval (seconds)",
+  "distanceLabel": "Distance (meters)",
+  "angleLabel": "Angle (degrees)",
+  "heartbeatLabel": "Stationary heartbeat (seconds)",
+  "bufferLabel": "Offline buffering",
+  "wakelockLabel": "Wake lock",
+  "stopDetectionLabel": "Stop detection",
+  "preferPlatformProvidersLabel": "Use system location",
+  "trackingLabel": "Continuous tracking",
+  "advancedLabel": "Advanced settings",
+  "passwordLabel": "Password",
+  "optimizationMessage": "To ensure reliable tracking, please disable battery optimization for this app.",
+  "passwordError": "Wrong password",
+  "startAction": "Start service",
+  "stopAction": "Stop service",
+  "sosAction": "Create Event Here",
+  "sosSending": "Creating event…",
+  "sosSent": "Event created successfully.",
+  "sosFailed": "Event could not be created.",
+  "disclosureMessage": "This app collects location and activity data in the background and sends it to the configured server.",
+  "configurationMessage": "Apply new configuration?",
+  "trackingUrlLabel": "Tracking Server URL",
+  "ccSectionTitle": "SAIMOS Control Center",
+  "ccUrlLabel": "Control Center Server URL",
+  "ccUserLabel": "Username",
+  "retryButton": "Retry",
+  "trackingStartError": "Failed to start tracking. Check location permissions.",
+  "ccRegistrationFailed": "Device registration failed.",
+  "ccUrlRequiredError": "Control Center Server URL must start with https://\n\nPlease configure in settings.",
+  "ccAuthError401": "Invalid username or password (401).",
+  "ccAuthErrorStatus": "Authentication failed ({statusCode}).",
+  "@ccAuthErrorStatus": {
+    "placeholders": {
+      "statusCode": {"type": "int"}
+    }
+  },
+  "ccConnectionError": "Connection to Control Center failed:\n{error}",
+  "@ccConnectionError": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "ccUserDetailError": "Could not retrieve user details ({statusCode}).",
+  "@ccUserDetailError": {
+    "placeholders": {
+      "statusCode": {"type": "int"}
+    }
+  },
+  "ccGeoStoreError": "GeoStore connection failed:\n{error}",
+  "@ccGeoStoreError": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "ccConnectionTimeoutError": "Could not reach the Control Center server at {url}. Please check your VPN connection and the configured URL.",
+  "@ccConnectionTimeoutError": {
+    "placeholders": {
+      "url": {"type": "String"}
+    }
+  }
+}

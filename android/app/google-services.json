@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616327934228",
+    "project_id": "saimos-guard",
+    "storage_bucket": "saimos-guard.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616327934228:android:4fd344edf71252504bd201",
+        "android_client_info": {
+          "package_name": "de.mistit.saimosguard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB90ZOzqPEiGeoppgRYaL8X_j9Cr_MKd1k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
