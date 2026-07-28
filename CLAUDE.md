@@ -136,7 +136,7 @@ Traccar server all confirmed working.
 **Open items (external/manual, not code):**
 1. ~~Create a GitHub repo~~ — **done**, `buhao75/traccar-client-youmappics`, pushed.
 2. ~~Create a Firebase project, replace config files~~ — **done**. Firebase project `youmappics-431f3` (Android + iOS apps `de.mistit.youmappics`), `google-services.json`/`GoogleService-Info.plist` swapped in.
-3. **Register `de.mistit.youmappics`** as an iOS App ID in the Apple Developer Portal, enable Push Notifications capability, create the app in App Store Connect. **Own Apple Developer team**, not SAIMOS Guard's — `DEVELOPMENT_TEAM = 64AX396SPH` in `project.pbxproj` (updated 2026-07-27, was briefly assumed to be shared with SAIMOS Guard, corrected). A new App Store Connect API key (Key ID `XD3Q76D3HM`) was created for this team — needs its own Codemagic integration, don't reuse SAIMOS Guard's.
+3. **Register `de.mistit.youmappics`** as an iOS App ID in the Apple Developer Portal, enable Push Notifications capability, create the app in App Store Connect. **Correction history:** briefly assumed shared with SAIMOS Guard, then switched to an own team (`64AX396SPH`, API key `XD3Q76D3HM`), then reverted back to SAIMOS Guard's team on the user's decision (2026-07-28) — `DEVELOPMENT_TEAM = 6X2SXDTM5K` in `project.pbxproj` is the current, final value. Codemagic's iOS code signing for this workflow should use SAIMOS Guard's existing App Store Connect integration, not the `64AX396SPH`/`XD3Q76D3HM` one (that team's key can't sign for `6X2SXDTM5K`'s resources).
 4. **Set up Codemagic** for this repo now that it's on GitHub — mirrors the SAIMOS Guard Codemagic setup (see "Build & Release" below), reusing the existing App Store Connect integration (point 3).
 5. **Server-side:** create `appupdates/youmappics.json` on `wildkogel.steigemann.de` (same content shape as the native app's `youmappics-android.json`, minus the Flutter-unused `package*` fields) — optional, the fetch is non-fatal and the app works fine with its built-in defaults until this exists.
 6. No keystore yet for a signed Android release APK (see "Build & Release" → Android signed APK, same process as SAIMOS Guard).
@@ -181,11 +181,11 @@ No keystore exists yet (`android/app/build.gradle.kts` falls back to unsigned wi
 ### iOS — TestFlight via Codemagic
 
 **Prerequisites (App ID/App Store Connect app not yet created — see "Open items" above):**
-- `DEVELOPMENT_TEAM` in `ios/Runner.xcodeproj/project.pbxproj` (3 occurrences) — `64AX396SPH`, own team, already set.
+- `DEVELOPMENT_TEAM` in `ios/Runner.xcodeproj/project.pbxproj` (3 occurrences) — `6X2SXDTM5K`, same team as SAIMOS Guard (reverted back to this on 2026-07-28, see "Open items" point 3 for the back-and-forth history).
 - `PRODUCT_BUNDLE_IDENTIFIER` (3 occurrences) = `de.mistit.youmappics` (already done)
 - App ID `de.mistit.youmappics` registered in the Apple Developer Portal, **Push Notifications capability enabled** (Identifiers → select the app → check "Push Notifications" → Save)
 - App created in App Store Connect (bundle ID must match exactly)
-- Codemagic: own App Store Connect API key integration (Key ID `XD3Q76D3HM`), separate from SAIMOS Guard's.
+- Codemagic: use SAIMOS Guard's existing App Store Connect API key integration for this workflow (same team) — not the separate `64AX396SPH`/`XD3Q76D3HM` one.
 
 **Codemagic setup:**
 1. Create an App Store Connect API key (App Store Connect → Users and Access → Integrations → Keys, role "App Manager"), note the `.p8` file + Key ID + Issuer ID (the file can only be downloaded once)
