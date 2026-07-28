@@ -131,7 +131,7 @@ Traccar server all confirmed working.
 - Device-registration fallback list → single legacy job entry (dropped the SAIMOS-CC-specific second fallback, which doesn't exist on this backend)
 - VPN-specific error copy/comments → generalized (this backend doesn't need VPN)
 - `ccSectionTitle` → "YouMapPics" (was "SAIMOS Control Center")
-- Version reset to `1.0.0+1` (independent of SAIMOS Guard's version history)
+- Version set to `2.0.0+3`, matching SAIMOS Guard's current version exactly (user's choice, 2026-07-28 — not an independent version line)
 
 **Open items (external/manual, not code):**
 1. ~~Create a GitHub repo~~ — **done**, `buhao75/traccar-client-youmappics`, pushed.
