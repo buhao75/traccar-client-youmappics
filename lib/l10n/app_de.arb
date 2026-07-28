@@ -46,7 +46,7 @@
   "retryButton": "Wiederholen",
   "trackingStartError": "Tracking konnte nicht gestartet werden. Bitte Standortberechtigung prüfen.",
   "ccRegistrationFailed": "Geräteregistrierung fehlgeschlagen.",
-  "ccUrlRequiredError": "Control Center Server-URL muss mit https:// beginnen.\n\nBitte in den Einstellungen konfigurieren.",
+  "ccUrlRequiredError": "Control Center Server-URL, Benutzername und Passwort müssen konfiguriert sein (URL muss mit https:// beginnen).\n\nBitte in den Einstellungen konfigurieren.",
   "ccAuthError401": "Ungültiger Benutzername oder Passwort (401).",
   "ccAuthErrorStatus": "Authentifizierung fehlgeschlagen ({statusCode}).",
   "ccConnectionError": "Verbindung zu Control Center fehlgeschlagen:\n{error}",

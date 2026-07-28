@@ -46,7 +46,7 @@
   "retryButton": "Retry",
   "trackingStartError": "Failed to start tracking. Check location permissions.",
   "ccRegistrationFailed": "Device registration failed.",
-  "ccUrlRequiredError": "Control Center Server URL must start with https://\n\nPlease configure in settings.",
+  "ccUrlRequiredError": "Control Center server URL, username, and password must all be configured (URL must start with https://).\n\nPlease configure in settings.",
   "ccAuthError401": "Invalid username or password (401).",
   "ccAuthErrorStatus": "Authentication failed ({statusCode}).",
   "@ccAuthErrorStatus": {

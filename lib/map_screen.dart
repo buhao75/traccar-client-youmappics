@@ -198,7 +198,7 @@ class _MapScreenState extends State<MapScreen> {
 
     final l10n = AppLocalizations.of(context)!;
 
-    if (!ccUrl.startsWith('https://')) {
+    if (!ccUrl.startsWith('https://') || user.isEmpty || pass.isEmpty) {
       _showError(l10n.ccUrlRequiredError);
       return;
     }
