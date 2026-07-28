@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:traccar_client/main.dart';
+import 'package:traccar_client/app_keys.dart';
 import 'package:traccar_client/password_service.dart';
 import 'package:traccar_client/qr_code_screen.dart';
 
@@ -29,7 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     };
   }
 
-  Future<void> _editSetting(String title, String key, bool isInt) async {
+  Future<void> _editSetting(String title, String key, bool isInt, {bool obscure = false}) async {
     final initialValue = isInt
         ? Preferences.instance.getInt(key)?.toString() ?? '0'
         : Preferences.instance.getString(key) ?? '';
@@ -46,6 +46,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           controller: controller,
           keyboardType: isInt ? TextInputType.number : TextInputType.text,
           inputFormatters: isInt ? [FilteringTextInputFormatter.digitsOnly] : [],
+          obscureText: obscure,
         ),
         actions: [
           TextButton(
@@ -112,7 +113,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  Widget _buildListTile(String title, String key, bool isInt) {
+  Widget _buildListTile(String title, String key, bool isInt, {bool obscure = false}) {
     String? value;
     if (isInt) {
       final intValue = Preferences.instance.getInt(key);
@@ -126,8 +127,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
     return ListTile(
       title: Text(title),
-      subtitle: Text(value ?? ''),
-      onTap: () => _editSetting(title, key, isInt),
+      subtitle: Text(obscure && (value?.isNotEmpty ?? false) ? '••••••••' : (value ?? '')),
+      onTap: () => _editSetting(title, key, isInt, obscure: obscure),
     );
   }
 
@@ -236,6 +237,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: Text(AppLocalizations.of(context)!.passwordLabel),
               onTap: _changePassword,
             ),
+          const Divider(),
+          ListTile(
+            title: Text(AppLocalizations.of(context)!.ccSectionTitle),
+            dense: true,
+          ),
+          _buildListTile(AppLocalizations.of(context)!.ccUrlLabel, Preferences.saimosccUrl, false),
+          _buildListTile(AppLocalizations.of(context)!.ccUserLabel, Preferences.saimosccUser, false),
+          _buildListTile(AppLocalizations.of(context)!.passwordLabel, Preferences.saimosccPassword, false, obscure: true),
+          const Divider(),
+          ListTile(
+            title: const Text('YouMapPics'),
+            subtitle: const Text('Based on Traccar Client (Apache License 2.0)'),
+            trailing: const Icon(Icons.info_outline),
+            onTap: () => showLicensePage(
+              context: context,
+              applicationName: 'YouMapPics',
+              applicationLegalese: 'Based on Traccar Client\n© Anton Tananaev\nApache License 2.0',
+            ),
+          ),
         ],
       ),
     );

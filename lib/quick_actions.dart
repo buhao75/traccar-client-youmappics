@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quick_actions/quick_actions.dart';
 
+import 'create_event.dart';
 import 'geolocation_service.dart';
 import 'l10n/app_localizations.dart';
 
@@ -28,7 +29,7 @@ class _QuickActionsInitializerState extends State<QuickActionsInitializer> {
           case 'stop':
             await GeolocationService.tracker.stop();
           case 'sos':
-            await GeolocationService.tracker.requestPosition(alarm: 'sos');
+            await createEventHere();
         }
       } on PlatformException {
         // permission denied or startup error

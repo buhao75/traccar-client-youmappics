@@ -33,7 +33,49 @@
   "passwordError": "Wrong password",
   "startAction": "Start service",
   "stopAction": "Stop service",
-  "sosAction": "Send SOS",
+  "sosAction": "Create Event Here",
+  "sosSending": "Creating event…",
+  "sosSent": "Event created successfully.",
+  "sosFailed": "Event could not be created.",
   "disclosureMessage": "This app collects location and activity data in the background and sends it to the configured server.",
-  "configurationMessage": "Apply new configuration?"
+  "configurationMessage": "Apply new configuration?",
+  "trackingUrlLabel": "Tracking Server URL",
+  "ccSectionTitle": "YouMapPics",
+  "ccUrlLabel": "Control Center Server URL",
+  "ccUserLabel": "Username",
+  "retryButton": "Retry",
+  "trackingStartError": "Failed to start tracking. Check location permissions.",
+  "ccRegistrationFailed": "Device registration failed.",
+  "ccUrlRequiredError": "Control Center Server URL must start with https://\n\nPlease configure in settings.",
+  "ccAuthError401": "Invalid username or password (401).",
+  "ccAuthErrorStatus": "Authentication failed ({statusCode}).",
+  "@ccAuthErrorStatus": {
+    "placeholders": {
+      "statusCode": {"type": "int"}
+    }
+  },
+  "ccConnectionError": "Connection to Control Center failed:\n{error}",
+  "@ccConnectionError": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "ccUserDetailError": "Could not retrieve user details ({statusCode}).",
+  "@ccUserDetailError": {
+    "placeholders": {
+      "statusCode": {"type": "int"}
+    }
+  },
+  "ccGeoStoreError": "GeoStore connection failed:\n{error}",
+  "@ccGeoStoreError": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "ccConnectionTimeoutError": "Could not reach the server at {url}. Please check the configured URL.",
+  "@ccConnectionTimeoutError": {
+    "placeholders": {
+      "url": {"type": "String"}
+    }
+  }
 }

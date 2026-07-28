@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:traccar_client/main.dart';
+import 'package:traccar_client/app_keys.dart';
 import 'package:traccar_client/password_service.dart';
 import 'package:traccar_client/preferences.dart';
 
@@ -92,9 +92,9 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                     if (!mounted) return;
                     if (!started) {
                       messengerKey.currentState?.showSnackBar(
-                        const SnackBar(
-                          content: Text('Failed to start tracking. Check location permissions.'),
-                          duration: Duration(seconds: 4),
+                        SnackBar(
+                          content: Text(AppLocalizations.of(context)!.trackingStartError),
+                          duration: const Duration(seconds: 4),
                         ),
                       );
                     }
@@ -149,8 +149,18 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             ),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(AppLocalizations.of(context)!.urlLabel),
+              title: Text(AppLocalizations.of(context)!.trackingUrlLabel),
               subtitle: Text(Preferences.instance.getString(Preferences.url) ?? ''),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(AppLocalizations.of(context)!.ccUrlLabel),
+              subtitle: Text(Preferences.instance.getString(Preferences.saimosccUrl) ?? ''),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(AppLocalizations.of(context)!.ccUserLabel),
+              subtitle: Text(Preferences.instance.getString(Preferences.saimosccUser) ?? ''),
             ),
             const SizedBox(height: 8),
             OverflowBar(
@@ -177,7 +187,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Traccar Client'),
+        title: Text(AppLocalizations.of(context)!.settingsTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

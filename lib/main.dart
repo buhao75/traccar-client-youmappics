@@ -11,14 +11,12 @@ import 'package:traccar_client/password_service.dart';
 import 'package:traccar_client/push_service.dart';
 import 'package:traccar_client/quick_actions.dart';
 
+import 'app_keys.dart';
 import 'configuration_service.dart';
 import 'geolocation_service.dart';
 import 'l10n/app_localizations.dart';
-import 'main_screen.dart';
+import 'map_screen.dart';
 import 'preferences.dart';
-
-final messengerKey = GlobalKey<ScaffoldMessengerState>();
-final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -101,27 +99,32 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    const seedColor = Color(0xFF385632);
+    final lightScheme = ColorScheme.fromSeed(seedColor: seedColor, brightness: Brightness.light);
+    final darkScheme = ColorScheme.fromSeed(seedColor: seedColor, brightness: Brightness.dark);
     return MaterialApp(
       scaffoldMessengerKey: messengerKey,
       navigatorKey: navigatorKey,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.green,
-          brightness: Brightness.light,
+        colorScheme: lightScheme,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: seedColor,
+          foregroundColor: Colors.white,
         ),
       ),
       darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.green,
-          brightness: Brightness.dark,
+        colorScheme: darkScheme,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: seedColor,
+          foregroundColor: Colors.white,
         ),
       ),
       home: Stack(
         children: const [
           QuickActionsInitializer(),
-          MainScreen(),
+          MapScreen(),
         ],
       ),
     );

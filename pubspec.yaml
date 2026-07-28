@@ -1,7 +1,7 @@
 name: traccar_client
-description: "Traccar Client"
+description: "YouMapPics"
 publish_to: 'none'
-version: 10.0.7+148
+version: 1.0.0+1
 
 environment:
   sdk: ^3.7.2
@@ -26,6 +26,11 @@ dependencies:
   app_links: ^7.0.0
   app_settings: ^8.0.0
   share_plus: ^13.1.0
+  webview_flutter: ^4.10.0
+  webview_flutter_android: ^4.3.0
+  xml: ^6.5.0
+  permission_handler: ^11.4.0
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
@@ -36,3 +41,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+  remove_alpha_ios: true
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/icon.png"
