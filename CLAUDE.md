@@ -98,10 +98,29 @@ backend conventions).
   virtualization settings — this is a dead end, don't retry it.
 - Only real option for UI testing right now: a physical Android device connected via `adb`.
 
-## Current Status (2026-07-27)
+## Branch strategy
 
-Freshly imported from SAIMOS Guard (`de.mistit.saimosguard` @ commit `ef920c9`) and rebranded for
-YouMapPics. Not yet built, run, or tested on a device.
+Matches SAIMOS Guard's convention: `main` is a **clean mirror of upstream** `traccar/traccar-client`
+(currently tracking `upstream/main` via a remote named `upstream`) — never commit YouMapPics changes
+there. All YouMapPics-specific work lives on `youmappics/vX.Y.Z` branches, based on an upstream tag
+(currently `youmappics/v10.0.7`, based on upstream tag `v10.0.7`). To pull in a future upstream
+release: `git fetch upstream`, then merge/rebase the new tag into a new `youmappics/vNEXT` branch (or
+the current one, if staying on the same major line) — normal `git merge` conflicts only arise in
+files YouMapPics itself modified (theme color, preference defaults, IDs, a few `.arb` strings); the
+WebView/GeoStore additions are new files upstream doesn't touch at all.
+
+**Note on this repo's history:** unlike SAIMOS Guard (a real `git clone` of upstream from the start),
+this repo was originally created via a snapshot import (no shared history) — retrofitted onto proper
+upstream tracking on 2026-07-28 by rebasing the accumulated rebrand diff onto the `v10.0.7` tag and
+resetting `main` to the real upstream `main` (force-pushed, confirmed with the user first since it
+rewrites the previously-pushed `main` history).
+
+## Current Status (2026-07-28)
+
+Rebranded from SAIMOS Guard (`de.mistit.saimosguard` @ commit `ef920c9`) for YouMapPics. Built,
+installed on a physical Android device (Samsung SM-A528B), and verified end-to-end: Firebase init,
+GeoStore login, device registration, MapStore WebView loading a map, and position tracking to the
+Traccar server all confirmed working.
 
 **Done (rebrand):**
 - App display name → "YouMapPics" (AndroidManifest, Info.plist, AppBar title, About dialog)
