@@ -33,6 +33,7 @@ class _MapScreenState extends State<MapScreen> {
   String _userDetailsXml = '';
   List<String> _registerServiceList = [
     'saimosws/services/manage_tracking_deviceid',
+    'saimosws/services/manage_guardtracker_device',
   ];
   int _serviceIndex = 0;
   bool _triedDbCommunicatorRegistration = false;

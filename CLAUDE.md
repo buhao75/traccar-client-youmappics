@@ -128,7 +128,7 @@ Traccar server all confirmed working.
 - App icon → YouMapPics logo (from the native reference project's `ic_launcher_foreground.png`), regenerated via `flutter_launcher_icons`
 - Theme color → YouMapPics green (`#385632`), single `seedColor` constant in `main.dart`
 - Default backend URLs → `wildkogel.steigemann.de` (tracking + MapStore/GeoStore)
-- Device-registration fallback list → single legacy job entry (dropped the SAIMOS-CC-specific second fallback, which doesn't exist on this backend)
+- Device-registration fallback list → matches SAIMOS Guard's default (both `manage_tracking_deviceid` and `manage_guardtracker_device`) — the production `appupdates/youmappics.json` also lists both, confirmed by the user, so this backend does run both jobs after all
 - VPN-specific error copy/comments → generalized (this backend doesn't need VPN)
 - `ccSectionTitle` → "YouMapPics" (was "SAIMOS Control Center")
 - Version set to `2.0.0+3`, matching SAIMOS Guard's current version exactly (user's choice, 2026-07-28 — not an independent version line)
