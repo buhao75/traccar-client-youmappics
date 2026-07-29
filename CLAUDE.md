@@ -207,6 +207,7 @@ No keystore exists yet (`android/app/build.gradle.kts` falls back to unsigned wi
 - `WebViewSSLBypass.swift` existed on disk but was never registered in `project.pbxproj` (missing PBXFileReference/PBXBuildFile/Sources build phase entries) → "Cannot find 'WebViewSSLBypass' in scope"
 - The auto-generated "FlutterFire: flutterfire upload-crashlytics-symbols" build phase script aborted the build when the `flutterfire` CLI wasn't installed on the build machine — the script now checks for it itself and skips the symbol upload instead of failing
 - iOS's `WKWebView` sends an incomplete default user agent (missing "Mobile/... Safari/..."), which made MapStore reject it as an unsupported browser — `lib/map_screen.dart` sets a real mobile Safari user agent on iOS
+- `WebViewSSLBypass.swift`'s exact-class-name lookup (`NSClassFromString`) for the WKWebView plugin's navigation delegate broke silently across two attempts (plugin internal renames, module-prefixed Swift/ObjC naming) — fixed 2026-07-28 by enumerating all loaded classes at runtime instead of guessing a name (see SAIMOS Guard commit `5ec0833`, same fix applied here in `22f4e13`)
 
 ## CI/CD
 
