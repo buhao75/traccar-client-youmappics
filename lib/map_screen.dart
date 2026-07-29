@@ -29,6 +29,7 @@ class _MapScreenState extends State<MapScreen> {
   String _errorMessage = '';
   late WebViewController _controller;
   String _localStorageJs = '';
+  bool _didInitialSecurityReload = false;
 
   Map<String, dynamic> _tokens = {};
   String _userDetailsXml = '';
@@ -101,6 +102,19 @@ class _MapScreenState extends State<MapScreen> {
       onPageStarted: (_) {
         if (_localStorageJs.isNotEmpty) {
           _controller.runJavaScript(_localStorageJs);
+        }
+      },
+      onPageFinished: (_) {
+        // On a freshly created WebView, this first-ever page load can race
+        // MapStore's own boot JS against the onPageStarted injection above,
+        // so it renders its login mask despite valid credentials having been
+        // set. A one-time reload after that first load finishes guarantees
+        // the second load sees the already-persisted localStorage value
+        // before MapStore's JS runs at all. Warm reloads (via the app's
+        // refresh button) never hit this, so the flag is never reset.
+        if (_localStorageJs.isNotEmpty && !_didInitialSecurityReload) {
+          _didInitialSecurityReload = true;
+          _controller.reload();
         }
       },
     );
