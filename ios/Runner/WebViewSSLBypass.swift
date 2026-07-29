@@ -5,6 +5,14 @@ import ObjectiveC
 // Bypasses SSL certificate validation in WKWebView for self-signed certificates.
 // Needed when the Control Center server uses a self-signed HTTPS certificate.
 // The Dart HttpClient already bypasses via badCertificateCallback; this covers the WebView.
+//
+// SUPERSEDED (2026-07-28) by map_screen.dart's WebKitNavigationDelegate.setOnSSlAuthError(),
+// the officially supported Dart-level equivalent -- this native swizzle never worked reliably
+// (see CLAUDE.md's "Known gotchas" for the full, painful history) and currently finds no
+// matching class, so install() below is a harmless no-op. Left in place only because a second
+// removal attempt without Xcode access felt like an unnecessary additional risk; safe to delete
+// (along with its project.pbxproj registration and the AppDelegate.swift call) once the Dart
+// fix is confirmed working on a real device.
 enum WebViewSSLBypass {
     static func install() {
         // webview_flutter_wkwebview 3.25.x (Pigeon codegen refactor): NavigationDelegateImpl

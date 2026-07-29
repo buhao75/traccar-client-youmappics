@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:xml/xml.dart';
 
 import 'create_event.dart';
@@ -112,6 +113,14 @@ class _MapScreenState extends State<MapScreen> {
         'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 '
         '(KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
       );
+      // Without this, iOS's WebView cancels loading on a self-signed certificate
+      // (e.g. an internal Control Center server). This is the officially
+      // supported equivalent of the Android setOnSSlAuthError call below --
+      // supersedes the old WebViewSSLBypass.swift native swizzle, which broke
+      // silently across plugin versions (see CLAUDE.md for that history).
+      await (navDelegate.platform as WebKitNavigationDelegate).setOnSSlAuthError((error) {
+        error.proceed();
+      });
     }
 
     if (Platform.isAndroid) {
@@ -121,8 +130,8 @@ class _MapScreenState extends State<MapScreen> {
             GeolocationPermissionsResponse(allow: true, retain: false),
       );
       // Without this, Android's WebView cancels loading on a self-signed
-      // certificate (e.g. an internal Control Center server), unlike iOS
-      // which already bypasses this via WebViewSSLBypass.swift.
+      // certificate (e.g. an internal Control Center server) -- see the
+      // matching iOS setOnSSlAuthError call above.
       await (navDelegate.platform as AndroidNavigationDelegate).setOnSSlAuthError((error) {
         error.proceed();
       });
