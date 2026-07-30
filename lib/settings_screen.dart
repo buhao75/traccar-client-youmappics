@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:traccar_client/app_keys.dart';
 import 'package:traccar_client/password_service.dart';
 import 'package:traccar_client/qr_code_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'geolocation_service.dart';
 import 'l10n/app_localizations.dart';
@@ -110,6 +112,98 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     if (result == true) {
       await PasswordService.setPassword(controller.text);
+    }
+  }
+
+  // Extracts scheme + host + port (no trailing slash); mirrors _origin() in
+  // map_screen.dart, duplicated here to avoid coupling this screen to
+  // _MapScreenState's private helpers.
+  String _origin(String url) {
+    final uri = Uri.parse(url.split('#')[0]);
+    return '${uri.scheme}://${uri.host}${uri.hasPort ? ':${uri.port}' : ''}';
+  }
+
+  HttpClient _httpClient() => HttpClient()
+    ..connectionTimeout = const Duration(seconds: 15)
+    ..badCertificateCallback = (cert, host, port) => true;
+
+  Future<void> _forgotCredentials() async {
+    final l10n = AppLocalizations.of(context)!;
+    final controller = TextEditingController();
+
+    final input = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        scrollable: true,
+        title: Text(l10n.forgotCredentialsDialogTitle),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(labelText: l10n.forgotCredentialsFieldHint),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.cancelButton),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: Text(l10n.saveButton),
+          ),
+        ],
+      ),
+    );
+
+    if (input == null) return;
+    final value = input.trim();
+    if (value.isEmpty) return;
+
+    final ccUrl = Preferences.instance.getString(Preferences.saimosccUrl) ?? '';
+    if (!ccUrl.startsWith('https://')) {
+      messengerKey.currentState?.showSnackBar(SnackBar(content: Text(l10n.ccUrlRequiredError)));
+      return;
+    }
+
+    final url = '${_origin(ccUrl)}/cc-com/api/v1/auth/forgotCredentials';
+
+    try {
+      final req = await _httpClient().postUrl(Uri.parse(url));
+      req.headers.set('content-type', 'application/json');
+      req.write(jsonEncode({value.contains('@') ? 'email' : 'username': value}));
+      final res = await req.close();
+      final body = await res.transform(utf8.decoder).join();
+
+      if (res.statusCode == 200) {
+        messengerKey.currentState?.showSnackBar(SnackBar(content: Text(l10n.forgotCredentialsSuccess)));
+        return;
+      }
+
+      String? msg;
+      try {
+        final json = jsonDecode(body) as Map<String, dynamic>;
+        if (json['msg'] is String) msg = json['msg'] as String;
+      } catch (_) {}
+
+      if (msg != null) {
+        messengerKey.currentState?.showSnackBar(SnackBar(content: Text(msg)));
+      } else if (res.statusCode == 404) {
+        // Not a business "account not found" response (those come with a
+        // JSON msg from cc-db-communicator) - the endpoint itself is
+        // missing, i.e. this backend hasn't been migrated yet.
+        messengerKey.currentState?.showSnackBar(SnackBar(
+          content: Text(l10n.forgotCredentialsNotAvailableHint),
+          duration: const Duration(seconds: 8),
+          action: SnackBarAction(
+            label: l10n.openButton,
+            onPressed: () => launchUrl(Uri.parse(ccUrl), mode: LaunchMode.externalApplication),
+          ),
+        ));
+      } else {
+        messengerKey.currentState?.showSnackBar(SnackBar(
+          content: Text(l10n.ccConnectionError('${res.statusCode} ${res.reasonPhrase}')),
+        ));
+      }
+    } catch (e) {
+      messengerKey.currentState?.showSnackBar(SnackBar(content: Text(l10n.ccConnectionError(e.toString()))));
     }
   }
 
@@ -245,6 +339,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildListTile(AppLocalizations.of(context)!.ccUrlLabel, Preferences.saimosccUrl, false),
           _buildListTile(AppLocalizations.of(context)!.ccUserLabel, Preferences.saimosccUser, false),
           _buildListTile(AppLocalizations.of(context)!.passwordLabel, Preferences.saimosccPassword, false, obscure: true),
+          ListTile(
+            title: Text(AppLocalizations.of(context)!.forgotCredentialsLabel),
+            onTap: _forgotCredentials,
+          ),
           const Divider(),
           ListTile(
             title: const Text('YouMapPics'),
