@@ -22,6 +22,10 @@ class Preferences {
   static const String preferPlatformProviders = 'prefer_platform_providers';
   static const String password = 'password';
 
+  static const String saimosccUrl = 'saimoscc_url';
+  static const String saimosccUser = 'saimoscc_user';
+  static const String saimosccPassword = 'saimoscc_password';
+
   static Future<void> init() async {
     _initFuture ??= _createInstance();
     await _initFuture;
@@ -35,6 +39,7 @@ class Preferences {
       cacheOptions: SharedPreferencesWithCacheOptions(
         allowList: {
           id, url, accuracy, distance, interval, angle, heartbeat, buffer, wakelock, stopDetection, preferPlatformProviders, password,
+          saimosccUrl, saimosccUser, saimosccPassword,
         },
       ),
     );
@@ -47,7 +52,10 @@ class Preferences {
     }
     if (instance.getString(id) == null) {
       await instance.setString(id, (Random().nextInt(90000000) + 10000000).toString());
-      await instance.setString(url, 'http://demo.traccar.org:5055');
+      // Trailing slash required: the bare path 301-redirects (nginx), which
+      // the SDK's HTTP client doesn't follow for position POSTs.
+      await instance.setString(url, 'https://wildkogel.steigemann.de/gt/');
+      await instance.setString(saimosccUrl, 'https://wildkogel.steigemann.de/ms/#/context/youmappics-mobile/178');
       await instance.setString(accuracy, 'medium');
       await instance.setInt(interval, 300);
       await instance.setInt(distance, 75);

@@ -1,35 +1,26 @@
 {
   "project_info": {
-    "project_number": "39016471396",
-    "firebase_url": "https://traccar-client-app.firebaseio.com",
-    "project_id": "traccar-client-app",
-    "storage_bucket": "traccar-client-app.firebasestorage.app"
+    "project_number": "1094672423522",
+    "project_id": "youmappics-431f3",
+    "storage_bucket": "youmappics-431f3.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:39016471396:android:b1c7194c699bfa25",
+        "mobilesdk_app_id": "1:1094672423522:android:4094be1a4d4e6a41368f3b",
         "android_client_info": {
-          "package_name": "org.traccar.client"
+          "package_name": "de.mistit.youmappics"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD5uSOXpbWkR8C3fqdNKQcI7BJrPObpeP4"
+          "current_key": "AIzaSyAJFHchCPIrVbq5M4RPCmUmIkrsrMb6sso"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "39016471396-7mdutolor3h210bm9qmf60gp18lmmhnm.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "org.traccar.client.TraccarClient"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
