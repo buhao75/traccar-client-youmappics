@@ -121,12 +121,20 @@ class _MapScreenState extends State<MapScreen> {
       onWebResourceError: (error) {
         // iOS reclaims a backgrounded WebView's content process under memory
         // pressure, which otherwise leaves the page blank/stale with no
-        // visible error. Take the recovery reload under our own control
-        // (instead of leaving it to WebKit) and log a breadcrumb so we can
-        // confirm this is really the cause behind field reports of the map
-        // "reloading itself" after the app was backgrounded.
+        // visible error. This is an expected, self-recovering condition, not
+        // a user-facing error, so there's no snackbar -- just take the
+        // recovery reload under our own control (instead of leaving it to
+        // WebKit) and record it as a non-fatal in Crashlytics (log() alone is
+        // never uploaded without an accompanying crash/non-fatal/ANR) so we
+        // can confirm whether this is really the cause behind field reports
+        // of the map "reloading itself" after the app was backgrounded.
         if (error.errorType == WebResourceErrorType.webContentProcessTerminated) {
-          FirebaseCrashlytics.instance.log('webview_content_process_terminated');
+          FirebaseCrashlytics.instance.recordError(
+            Exception('WebView content process terminated'),
+            null,
+            reason: 'webview_content_process_terminated',
+            fatal: false,
+          );
           _controller.reload();
         }
       },
