@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -114,6 +115,18 @@ class _MapScreenState extends State<MapScreen> {
         // refresh button) never hit this, so the flag is never reset.
         if (_localStorageJs.isNotEmpty && !_didInitialSecurityReload) {
           _didInitialSecurityReload = true;
+          _controller.reload();
+        }
+      },
+      onWebResourceError: (error) {
+        // iOS reclaims a backgrounded WebView's content process under memory
+        // pressure, which otherwise leaves the page blank/stale with no
+        // visible error. Take the recovery reload under our own control
+        // (instead of leaving it to WebKit) and log a breadcrumb so we can
+        // confirm this is really the cause behind field reports of the map
+        // "reloading itself" after the app was backgrounded.
+        if (error.errorType == WebResourceErrorType.webContentProcessTerminated) {
+          FirebaseCrashlytics.instance.log('webview_content_process_terminated');
           _controller.reload();
         }
       },
