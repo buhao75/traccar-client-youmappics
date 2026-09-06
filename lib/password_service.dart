@@ -1,18 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:traccar_client/l10n/app_localizations.dart';
 import 'package:traccar_client/preferences.dart';
 
 class PasswordService {
-  static final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-
-  static Future<void> migrate() async {
-    final oldPassword = await _secureStorage.read(key: Preferences.password);
-    if (oldPassword == null) return;
-    await Preferences.instance.setString(Preferences.password, oldPassword);
-    await _secureStorage.delete(key: Preferences.password);
-  }
-
   static Future<bool> authenticate(BuildContext context) async {
     final storedPassword = Preferences.instance.getString(Preferences.password);
     if (storedPassword == null || storedPassword.isEmpty) return true;
