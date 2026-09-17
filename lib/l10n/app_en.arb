@@ -83,5 +83,6 @@
     "placeholders": {
       "url": {"type": "String"}
     }
-  }
+  },
+  "imprintLabel": "Legal Notice"
 }

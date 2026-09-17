@@ -212,6 +212,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           content: Text(l10n.ccConnectionError('${res.statusCode} ${res.reasonPhrase}')),
         ));
       }
+    } on SocketException catch (_) {
+      messengerKey.currentState?.showSnackBar(SnackBar(content: Text(l10n.ccConnectionTimeoutError(ccUrl))));
     } catch (e) {
       messengerKey.currentState?.showSnackBar(SnackBar(content: Text(l10n.ccConnectionError(e.toString()))));
     }
@@ -362,8 +364,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
               context: context,
               applicationName: 'YouMapPics',
               applicationVersion: _appVersion,
-              applicationLegalese: 'Based on Traccar Client v10.1.2\n© Anton Tananaev\nApache License 2.0',
+              applicationLegalese:
+                  '© 2026 Michael Steigemann - MiSt IT\n\nBased on Traccar Client v10.1.2\n© Anton Tananaev\nApache License 2.0',
             ),
+          ),
+          ListTile(
+            title: Text(AppLocalizations.of(context)!.imprintLabel),
+            subtitle: const Text('MiSt IT'),
+            trailing: const Icon(Icons.gavel_outlined),
+            onTap: _showImprint,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showImprint() {
+    final linkStyle = TextStyle(color: Theme.of(context).colorScheme.primary);
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(AppLocalizations.of(ctx)!.imprintLabel),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Michael Steigemann\nMiSt IT\nAm Schnepfenweg 41\n80995 München\nDeutschland'),
+              const SizedBox(height: 12),
+              InkWell(
+                onTap: () => launchUrl(Uri.parse('tel:+498928787449'), mode: LaunchMode.externalApplication),
+                child: Text('Phone: +49 89 28787449', style: linkStyle),
+              ),
+              const Text('Fax: +49 89 28787450'),
+              InkWell(
+                onTap: () => launchUrl(Uri.parse('mailto:mistit@steigemann.de'), mode: LaunchMode.externalApplication),
+                child: Text('Email: mistit@steigemann.de', style: linkStyle),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(AppLocalizations.of(ctx)!.okButton),
           ),
         ],
       ),
