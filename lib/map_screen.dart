@@ -542,16 +542,19 @@ class MapScreenState extends State<MapScreen> {
                   const SizedBox(height: 16),
                   Text(_errorMessage, textAlign: TextAlign.center),
                   const SizedBox(height: 24),
+                  if (!_errorNeedsSettings) ...[
+                    FilledButton(
+                      onPressed: _reload,
+                      child: Text(AppLocalizations.of(context)!.retryButton),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                   FilledButton(
-                    onPressed: _errorNeedsSettings
-                        ? () => Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => const MainScreen()),
-                            )
-                        : _reload,
-                    child: Text(_errorNeedsSettings
-                        ? AppLocalizations.of(context)!.settingsButton
-                        : AppLocalizations.of(context)!.retryButton),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const MainScreen()),
+                    ),
+                    child: Text(AppLocalizations.of(context)!.settingsButton),
                   ),
                 ],
               ),
