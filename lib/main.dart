@@ -106,6 +106,7 @@ class _MainAppState extends State<MainApp> {
     final lightScheme = ColorScheme.fromSeed(seedColor: seedColor, brightness: Brightness.light);
     final darkScheme = ColorScheme.fromSeed(seedColor: seedColor, brightness: Brightness.dark);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       scaffoldMessengerKey: messengerKey,
       navigatorKey: navigatorKey,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

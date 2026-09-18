@@ -28,6 +28,7 @@ class MapScreen extends StatefulWidget {
 class MapScreenState extends State<MapScreen> {
   _Status _status = _Status.loading;
   String _errorMessage = '';
+  bool _errorNeedsSettings = false;
   late WebViewController _controller;
   String _localStorageJs = '';
   bool _didInitialSecurityReload = false;
@@ -242,8 +243,12 @@ class MapScreenState extends State<MapScreen> {
 
     final l10n = AppLocalizations.of(context)!;
 
-    if (!ccUrl.startsWith('https://') || user.isEmpty || pass.isEmpty) {
-      _showError(l10n.ccUrlRequiredError);
+    if (!ccUrl.startsWith('https://')) {
+      _showError(l10n.ccUrlRequiredError, needsSettings: true);
+      return;
+    }
+    if (user.isEmpty || pass.isEmpty) {
+      _showError(l10n.ccCredentialsRequiredError, needsSettings: true);
       return;
     }
 
@@ -462,11 +467,12 @@ class MapScreenState extends State<MapScreen> {
     return result;
   }
 
-  void _showError(String message) {
+  void _showError(String message, {bool needsSettings = false}) {
     if (mounted) {
       setState(() {
         _status = _Status.error;
         _errorMessage = message;
+        _errorNeedsSettings = needsSettings;
       });
     }
   }
@@ -484,6 +490,7 @@ class MapScreenState extends State<MapScreen> {
     setState(() {
       _status = _Status.loading;
       _errorMessage = '';
+      _errorNeedsSettings = false;
       _tokens = {};
       _userDetailsXml = '';
       _localStorageJs = '';
@@ -536,8 +543,15 @@ class MapScreenState extends State<MapScreen> {
                   Text(_errorMessage, textAlign: TextAlign.center),
                   const SizedBox(height: 24),
                   FilledButton(
-                    onPressed: _reload,
-                    child: Text(AppLocalizations.of(context)!.retryButton),
+                    onPressed: _errorNeedsSettings
+                        ? () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const MainScreen()),
+                            )
+                        : _reload,
+                    child: Text(_errorNeedsSettings
+                        ? AppLocalizations.of(context)!.settingsButton
+                        : AppLocalizations.of(context)!.retryButton),
                   ),
                 ],
               ),
