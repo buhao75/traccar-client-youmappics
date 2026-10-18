@@ -46,6 +46,11 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Gradle build output (native Android build, separate from Flutter's /build/)
+android/build/
+android/app/build/
+android/.gradle/
+
 # Flutter gen-l10n outputs
 lib/l10n/app_localizations.dart
 lib/l10n/app_localizations_*.dart
