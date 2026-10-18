@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:traccar_client/app_keys.dart';
 import 'package:traccar_client/password_service.dart';
-import 'package:traccar_client/qr_code_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'geolocation_service.dart';
@@ -223,7 +222,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     String? value;
     if (isInt) {
       final intValue = Preferences.instance.getInt(key);
-      if (intValue != null && (intValue > 0 || key == Preferences.distance)) {
+      if (intValue != null && intValue > 0) {
         value = intValue.toString();
       } else {
         value = AppLocalizations.of(context)!.disabledValue;
@@ -270,15 +269,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settingsTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.qr_code_scanner),
-            onPressed: () async {
-              await Navigator.push(context, MaterialPageRoute(builder: (_) => const QrCodeScreen()));
-              setState(() {});
-            },
-          ),
-        ],
       ),
       body: ListView(
         children: [
@@ -358,14 +348,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const Divider(),
           ListTile(
             title: const Text('YouMapPics'),
-            subtitle: Text('v$_appVersion · Based on Traccar Client v10.1.2 (Apache License 2.0)'),
+            subtitle: Text('v$_appVersion · Based on Traccar Client v10.1.7 (Apache License 2.0)'),
             trailing: const Icon(Icons.info_outline),
             onTap: () => showLicensePage(
               context: context,
               applicationName: 'YouMapPics',
               applicationVersion: _appVersion,
               applicationLegalese:
-                  '© 2026 Michael Steigemann - MiSt IT\n\nBased on Traccar Client v10.1.2\n© Anton Tananaev\nApache License 2.0',
+                  '© 2026 Michael Steigemann - MiSt IT\n\nBased on Traccar Client v10.1.7\n© Anton Tananaev\nApache License 2.0',
             ),
           ),
           ListTile(
