@@ -1,4 +1,5 @@
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:quick_actions/quick_actions.dart';
@@ -6,6 +7,7 @@ import 'package:quick_actions/quick_actions.dart';
 import 'create_event.dart';
 import 'geolocation_service.dart';
 import 'l10n/app_localizations.dart';
+import 'password_service.dart';
 
 class QuickActionsInitializer extends StatefulWidget {
   const QuickActionsInitializer({super.key});
@@ -21,7 +23,11 @@ class _QuickActionsInitializerState extends State<QuickActionsInitializer> {
   void initState() {
     super.initState();
     quickActions.initialize((shortcutType) async {
-      FirebaseCrashlytics.instance.log('quick_action: $shortcutType');
+      developer.log('quick_action: $shortcutType');
+      if (shortcutType == 'start' || shortcutType == 'stop') {
+        await WidgetsBinding.instance.endOfFrame;
+        if (!mounted || !await PasswordService.authenticate(context) || !mounted) return;
+      }
       try {
         switch (shortcutType) {
           case 'start':
@@ -35,7 +41,7 @@ class _QuickActionsInitializerState extends State<QuickActionsInitializer> {
         // permission denied or startup error
       }
       if (mounted) {
-        FirebaseCrashlytics.instance.log('quick_action_exit');
+        developer.log('quick_action_exit');
         SystemNavigator.pop();
       }
     });

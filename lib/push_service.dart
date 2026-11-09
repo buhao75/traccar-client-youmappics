@@ -3,7 +3,6 @@ import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:traccar_client/password_service.dart';
@@ -16,21 +15,21 @@ class PushService {
     await FirebaseMessaging.instance.requestPermission();
     FirebaseMessaging.onBackgroundMessage(pushServiceBackgroundHandler);
     FirebaseMessaging.onMessage.listen(_onMessage);
-    FirebaseMessaging.instance.onTokenRefresh.listen(_uploadToken);
-    unawaited(_uploadInitialToken());
+    FirebaseMessaging.instance.onRegistered.listen(_uploadToken);
+    unawaited(_register());
   }
 
-  static Future<void> _uploadInitialToken() async {
+  static Future<void> _register() async {
     try {
-      await _uploadToken(await FirebaseMessaging.instance.getToken());
+      await FirebaseMessaging.instance.register();
     } catch (error) {
-      developer.log('Failed to get notification token', error: error);
+      developer.log('Failed to register for notifications', error: error);
     }
   }
 
   static Future<void> _onMessage(RemoteMessage message) async {
     final command = message.data['command'];
-    FirebaseCrashlytics.instance.log('push_command: $command');
+    developer.log('push_command: $command');
     try {
       switch (command) {
         case 'positionSingle':
@@ -68,6 +67,6 @@ Future<void> pushServiceBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   await Preferences.init();
   await GeolocationService.tracker.init(Preferences.buildConfig());
-  FirebaseCrashlytics.instance.log('push_background_handler');
+  developer.log('push_background_handler');
   await PushService._onMessage(message);
 }
