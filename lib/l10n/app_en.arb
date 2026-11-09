@@ -52,6 +52,7 @@
   "retryButton": "Retry",
   "trackingStartError": "Failed to start tracking. Check location permissions.",
   "ccRegistrationFailed": "Device registration failed.",
+  "ccSlowServerWarning": "The Control Center is responding slowly. Some content may be missing or show as unavailable -- please try again in a moment.",
   "ccUrlRequiredError": "Control Center Server URL must start with https://\n\nPlease configure in settings.",
   "ccCredentialsRequiredError": "Control Center username and password must be configured.\n\nPlease configure in settings.",
   "ccAuthError401": "Invalid username or password (401).",

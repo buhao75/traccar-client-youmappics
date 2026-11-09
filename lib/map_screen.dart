@@ -42,6 +42,24 @@ class MapScreenState extends State<MapScreen> {
   int _serviceIndex = 0;
   bool _triedDbCommunicatorRegistration = false;
   List<String> _stayInWords = ['/saimoscc/', '/saimosws/', '/mapstore/', '/ms/', '/cc-com/'];
+  int _slowChunkLoadRetries = 0;
+
+  // MapStore lazy-loads its UI code as separate dist/*.chunk.js bundles after
+  // the initial page finishes -- if the CC server is slow/overloaded serving
+  // those, MapStore falls back to its own generic "resource not found" +
+  // login screen with no indication anything actually went wrong. Checked
+  // once per page load, well after the chunks would normally have arrived.
+  static const _slowChunkLoadWatchdogJs = '''
+    setTimeout(() => {
+      try {
+        const stuck = performance.getEntriesByType('resource')
+          .some(r => r.name.includes('/dist/') && r.name.endsWith('.chunk.js') && r.responseEnd === 0);
+        if (stuck && window.FlutterSlowLoad) {
+          window.FlutterSlowLoad.postMessage('stuck');
+        }
+      } catch (e) {}
+    }, 15000);
+  ''';
 
   @override
   void initState() {
@@ -54,6 +72,7 @@ class MapScreenState extends State<MapScreen> {
     _controller = WebViewController();
     await _controller.setJavaScriptMode(JavaScriptMode.unrestricted);
     await _controller.setBackgroundColor(Colors.white);
+    await _controller.addJavaScriptChannel('FlutterSlowLoad', onMessageReceived: (_) => _handleSlowChunkLoad());
 
     // WebViews don't show JS alert()/confirm() dialogs unless the host app
     // renders them itself; without this, MapStore's delete confirmation
@@ -105,6 +124,7 @@ class MapScreenState extends State<MapScreen> {
         if (_localStorageJs.isNotEmpty) {
           _controller.runJavaScript(_localStorageJs);
         }
+        _controller.runJavaScript(_slowChunkLoadWatchdogJs);
       },
       onPageFinished: (_) {
         // On a freshly created WebView, this first-ever page load can race
@@ -392,10 +412,45 @@ class MapScreenState extends State<MapScreen> {
     }
   }
 
+  // MapStore's persisted-security localStorage key is namespaced per app
+  // instance using the last path segment of the CC base URL (e.g. "saimoscc"
+  // for .../saimoscc/#/...) -- confirmed by inspecting a real logged-in
+  // session's localStorage, which used "saimoscc:mapstore.persistence.security".
+  // Derived from the URL instead of hardcoded in case a deployment ever uses
+  // a different app mount path.
+  String _ccAppName(String url) {
+    final segments = Uri.parse(_ccBase(url)).pathSegments.where((s) => s.isNotEmpty);
+    return segments.isNotEmpty ? segments.last : 'saimoscc';
+  }
+
   void _buildAndLoadMap() {
     try {
+      final ccUrl = Preferences.instance.getString(Preferences.saimosccUrl) ?? '';
       final userJson = _parseUserXml(_userDetailsXml);
-      final security = jsonEncode({
+      // Current MapStore (verified by inspecting a real interactive login's
+      // localStorage) persists the session under
+      // "<app-name>:mapstore.persistence.security" with this shape. Some CC
+      // deployments may still run an older MapStore version that instead
+      // reads the legacy "mapstore2.persist.security" key/shape (authHeader/
+      // errorCause/password* fields) -- confirmed on this fork's own CC
+      // server (wildkogel.steigemann.de), which still uses the legacy
+      // key/shape while SAIMOS Guard's test backend uses the new one. Since
+      // we can't detect which a given server expects from here, write BOTH.
+      final currentSecurity = jsonEncode({
+        'user': userJson,
+        'rules': [],
+        'loading': false,
+        'error': null,
+        'lastRefresh': null,
+        'previousRules': [],
+        'token': _tokens['access_token'],
+        'refresh_token': _tokens['refresh_token'],
+        'expires': _tokens['expires'],
+        'loginError': null,
+        'showModalSecurityPopup': false,
+        'protectedServices': [],
+      });
+      final legacySecurity = jsonEncode({
         'user': userJson,
         'errorCause': null,
         'token': _tokens['access_token'],
@@ -407,10 +462,23 @@ class MapScreenState extends State<MapScreen> {
         'passwordError': null,
         'changePasswordLoading': false,
       });
-      // jsonEncode(security) produces the double-encoded string needed for setItem
+      // jsonEncode(...) produces the double-encoded string needed for setItem
       _localStorageJs =
-          "window.localStorage.setItem('mapstore2.persist.security', ${jsonEncode(security)});";
-    } catch (_) {
+          "window.localStorage.setItem('${_ccAppName(ccUrl)}:mapstore.persistence.security', ${jsonEncode(currentSecurity)});"
+          "window.localStorage.setItem('mapstore2.persist.security', ${jsonEncode(legacySecurity)});";
+    } catch (e, st) {
+      // Silently falling back to an empty session here means MapStore loads
+      // unauthenticated with no app-level error -- it shows its own login
+      // mask instead, which looks like "the login doesn't work" even though
+      // the stored CC credentials are fine. Record it so we can see what
+      // actually broke (most likely _parseUserXml choking on the GeoStore
+      // user-details XML) instead of only hearing "login doesn't work".
+      FirebaseCrashlytics.instance.recordError(
+        e,
+        st,
+        reason: 'build_and_load_map_security_injection_failed',
+        fatal: false,
+      );
       _localStorageJs =
           "window.localStorage.setItem('mapstore2.persist.security', '');";
     }
@@ -484,6 +552,25 @@ class MapScreenState extends State<MapScreen> {
     }
   }
 
+  // MapStore's own UI chunks failed to arrive in time (see
+  // _slowChunkLoadWatchdogJs) -- most likely the CC server is overloaded.
+  // Reload once or twice in case it was transient; past that, stop retrying
+  // silently and tell the user instead of reloading forever.
+  void _handleSlowChunkLoad() {
+    FirebaseCrashlytics.instance.recordError(
+      Exception('MapStore chunk.js still pending 15s after page load'),
+      null,
+      reason: 'mapstore_slow_chunk_load',
+      fatal: false,
+    );
+    if (_slowChunkLoadRetries < 2) {
+      _slowChunkLoadRetries++;
+      _controller.reload();
+    } else {
+      _showSnackbar(AppLocalizations.of(context)!.ccSlowServerWarning);
+    }
+  }
+
   void refresh() => _reload();
 
   Future<void> _reload() async {
@@ -500,6 +587,7 @@ class MapScreenState extends State<MapScreen> {
       ];
       _serviceIndex = 0;
       _stayInWords = ['/saimoscc/', '/saimosws/', '/mapstore/', '/ms/', '/cc-com/'];
+      _slowChunkLoadRetries = 0;
     });
     await _controller.loadRequest(Uri.parse('about:blank'));
     _startFlow();
